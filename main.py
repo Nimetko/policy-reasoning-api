@@ -6,26 +6,31 @@ from reasoning import run_reasoning
 
 app = FastAPI()
 
-# ✅ Add CORS immediately after app is created
+# ✅ Enable CORS for frontend (Lovable.dev)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Or use ["https://lovable.dev"] for stricter control
+    allow_origins=["*"],  # For stricter security, replace with ["https://lovable.dev"]
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Schema for the incoming request
+# ✅ Define request schema
 class ReasoningRequest(BaseModel):
     case_name: str
     data: List[Dict]
 
-# Root route (optional test)
+# ✅ Basic test route
 @app.get("/")
 def read_root():
     return {"message": "Hello from FastAPI!"}
 
-# Reasoning API
+# ✅ Main reasoning endpoint with debug logging
 @app.post("/reasoning-query")
 def analyze(request: ReasoningRequest):
-    return run_reasoning(request.case_name, request.data)
+    print("🔍 Incoming request to /reasoning-query")
+    print("📎 case_name:", request.case_name)
+    print("📎 data:", request.data)
+
+    result = run_reasoning(request.case_name, request.data)
+    return result

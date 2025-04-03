@@ -1,0 +1,11 @@
+case_id,policy_id,policy_name,policy_category,last_review_date,compliance_status
+1,301,Cybersecurity Oversight Act,Health,2025-02-02,Needs Review
+2,302,Digital Privacy Framework,Public Safety,2024-06-16,Non-Compliant
+3,303,Automated Decision-Making Bill,Public Safety,2024-09-28,Non-Compliant
+4,304,Public Infrastructure Review,AI Regulation,2024-09-21,Compliant
+5,305,Education Funding Amendment,Education,2024-11-18,Needs Review
+6,306,Climate Impact Disclosure Law,Education,2025-01-13,Needs Review
+7,307,AI Regulation for Public Use,Public Safety,2024-11-06,Compliant
+8,308,Workforce Reskilling Policy,Public Safety,2024-04-23,Rejected
+9,309,Health Data Sharing Reform,Public Safety,2024-09-14,Non-Compliant
+10,310,AI Regulation for Public Use,AI Regulation,2024-09-15,Needs Review

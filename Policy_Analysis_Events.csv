@@ -1,0 +1,39 @@
+event_id,case_id,activity,timestamp,actor,review_outcome,comments
+1,1,Draft Created,2024-08-23T21:27:07,Legal Team,Needs Revision,Missing compliance with standard X.
+2,1,Committee Review,2024-08-24T16:27:07,Regulatory Board,Approved,Needs legal alignment.
+3,1,Ethics Review,2024-08-25T18:27:07,Department B,Approved,Policy requires clarification.
+4,2,Draft Created,2024-10-02T20:27:07,Legal Team,Needs Revision,Needs legal alignment.
+5,2,Committee Review,2024-10-03T16:27:07,Regulatory Board,Rejected,Well-structured draft.
+6,2,Ethics Review,2024-10-04T18:27:07,Regulatory Board,Needs Revision,Well-structured draft.
+7,3,Draft Created,2024-12-03T21:27:07,Department A,Approved,Policy requires clarification.
+8,3,Committee Review,2024-12-04T19:27:07,AI Ethics Committee,Needs Revision,Well-structured draft.
+9,3,Ethics Review,2024-12-05T16:27:07,Department A,Rejected,Policy requires clarification.
+10,3,Legal Review,2024-12-06T20:27:07,AI Ethics Committee,Needs Revision,Missing compliance with standard X.
+11,3,Final Approval,2024-12-07T16:27:07,AI Ethics Committee,Approved,Policy requires clarification.
+12,4,Draft Created,2025-01-09T17:27:07,Department B,Approved,Clause 12: Algorithm Transparency is vague
+13,4,Committee Review,2025-01-10T17:27:07,Legal Team,In Progress,Clause 19: Bias Mitigation needs clarification
+14,4,Ethics Review,2025-01-11T18:27:07,Legal Team,In Progress,Clause 17: Risk assessment unclear
+15,5,Draft Created,2024-06-17T21:27:07,Department B,Rejected,Well-structured draft.
+16,5,Committee Review,2024-06-18T17:27:07,AI Ethics Committee,Rejected,Needs legal alignment.
+17,5,Ethics Review,2024-06-19T21:27:07,Department A,Approved,Needs legal alignment.
+18,5,Legal Review,2024-06-20T20:27:07,Legal Team,In Progress,Missing compliance with standard X.
+19,5,Final Approval,2024-06-21T19:27:07,Department A,Approved,Policy requires clarification.
+20,6,Draft Created,2025-02-02T19:27:07,Department A,Needs Revision,Policy requires clarification.
+21,6,Committee Review,2025-02-03T17:27:07,AI Ethics Committee,Needs Revision,Needs legal alignment.
+22,6,Ethics Review,2025-02-04T20:27:07,AI Ethics Committee,Approved,Policy requires clarification.
+23,6,Legal Review,2025-02-05T18:27:07,Department B,Rejected,Well-structured draft.
+24,7,Draft Created,2024-06-13T17:27:07,AI Ethics Committee,Approved,Policy requires clarification.
+25,7,Committee Review,2024-06-14T21:27:07,Department B,Approved,Needs legal alignment.
+26,7,Ethics Review,2024-06-15T19:27:07,Department A,In Progress,Policy requires clarification.
+27,8,Draft Created,2024-11-27T18:27:07,Regulatory Board,Rejected,Missing compliance with standard X.
+28,8,Committee Review,2024-11-28T21:27:07,Department B,Rejected,Missing compliance with standard X.
+29,8,Ethics Review,2024-11-29T19:27:07,Department A,Needs Revision,Well-structured draft.
+30,8,Legal Review,2024-11-30T16:27:07,Regulatory Board,Needs Revision,Well-structured draft.
+31,8,Final Approval,2024-12-01T17:27:07,Legal Team,Rejected,Policy requires clarification.
+32,9,Draft Created,2024-11-03T16:27:07,Department B,Rejected,Policy requires clarification.
+33,9,Committee Review,2024-11-04T16:27:07,Department B,In Progress,Policy requires clarification.
+34,9,Ethics Review,2024-11-05T20:27:07,Legal Team,Needs Revision,Well-structured draft.
+35,10,Draft Created,2024-12-01T20:27:07,Legal Team,Approved,Clause 12: Algorithm Transparency is vague
+36,10,Committee Review,2024-12-02T20:27:07,Department B,Needs Revision,Clause 5: Accountability framework not defined
+37,10,Ethics Review,2024-12-03T21:27:07,Legal Team,Approved,Clause 5: Accountability framework not defined
+38,10,Legal Review,2024-12-04T16:27:07,Legal Team,Needs Revision,Clause 19: Bias Mitigation needs clarification

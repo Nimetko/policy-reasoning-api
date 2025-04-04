@@ -4,30 +4,26 @@ from pydantic import BaseModel
 from typing import List, Dict
 from reasoning import run_reasoning
 from load_data import load_policy_data_from_csv
-from supabase_logger import log_reasoning_to_supabase  # ✅ Supabase logger
+from supabase_logger import log_reasoning_to_supabase
+import os
+from openai import OpenAI
 
 app = FastAPI()
 
-# ✅ Enable CORS for Lovable.dev or other frontends
+# ✅ Enable CORS for frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Or restrict to ["https://lovable.dev"]
+    allow_origins=["*"],  # Replace with your Lovable URL if needed
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ✅ Pydantic schema for POST input
+# ✅ POST /reasoning-query (structured query)
 class ReasoningRequest(BaseModel):
     case_name: str
     data: List[Dict]
 
-# ✅ Root health check
-@app.get("/")
-def read_root():
-    return {"message": "Hello from FastAPI!"}
-
-# ✅ Reasoning route used by Lovable
 @app.post("/reasoning-query")
 def analyze(request: ReasoningRequest):
     print("📎 case_name:", request.case_name)
@@ -49,7 +45,6 @@ def analyze(request: ReasoningRequest):
     mapped_case = case_map[key]
     result = run_reasoning(mapped_case, request.data)
 
-    # ✅ Log result to Supabase
     log_reasoning_to_supabase(
         case_name=mapped_case,
         process=result.get("process", ""),
@@ -60,14 +55,13 @@ def analyze(request: ReasoningRequest):
 
     return result
 
-# ✅ Route to test CSV data via batch reasoning
+# ✅ GET /test-batch-reasoning (batch analysis on CSV)
 @app.get("/test-batch-reasoning")
 def test_reasoning():
     data = load_policy_data_from_csv()
     case_name = "Policy Analysis"
     result = run_reasoning(case_name, data)
 
-    # ✅ Log batch result to Supabase
     log_reasoning_to_supabase(
         case_name=case_name,
         process=result.get("process", ""),
@@ -77,3 +71,39 @@ def test_reasoning():
     )
 
     return result
+
+# ✅ POST /free-question (exploratory natural language query)
+class FreeQuestionRequest(BaseModel):
+    question: str
+
+@app.post("/free-question")
+def free_question(request: FreeQuestionRequest):
+    question = request.question
+    data = load_policy_data_from_csv()
+
+    prompt = f"""
+    You are a senior policy analyst. Based on the following policy review events, please answer the user's question below in clear, evidence-informed terms.
+
+    Question: {question}
+
+    Event Logs:
+    {data}
+    """
+
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": "You are a helpful policy reasoning assistant."},
+            {"role": "user", "content": prompt}
+        ]
+    )
+
+    return {
+        "response": response.choices[0].message.content
+    }
+
+# ✅ Health check route
+@app.get("/")
+def read_root():
+    return {"message": "Hello from FastAPI!"}

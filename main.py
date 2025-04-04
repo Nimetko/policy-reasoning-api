@@ -6,35 +6,35 @@ from reasoning import run_reasoning
 
 app = FastAPI()
 
-# ✅ Allow frontend access (e.g., Lovable.dev)
+# ✅ Enable CORS to allow frontend access (e.g., Lovable.dev)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # You can restrict to ["https://lovable.dev"] later
+    allow_origins=["*"],  # Later: restrict to ["https://lovable.dev"]
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ✅ Expected request structure
+# ✅ Define expected structure of incoming request
 class ReasoningRequest(BaseModel):
     case_name: str
     data: List[Dict]
 
-# ✅ Root route
+# ✅ Root test endpoint (optional)
 @app.get("/")
 def read_root():
     return {"message": "Hello from FastAPI!"}
 
-# ✅ Reasoning endpoint with case_name normalization
+# ✅ Reasoning endpoint with robust case_name mapping
 @app.post("/reasoning-query")
 def analyze(request: ReasoningRequest):
     print("📎 case_name:", request.case_name)
     print("📎 data:", request.data)
 
-    # 🔄 Normalize to lowercase-hyphen format
+    # Normalize input to lowercase-hyphenated form
     key = request.case_name.strip().lower().replace(" ", "-")
 
-    # 🧠 Map all formats to internal GPT-ready names
+    # Supported mappings from UI → GPT prompt label
     case_map = {
         "policy-analysis": "Policy Analysis",
         "clause-rejections": "Clause Rejections",
@@ -43,6 +43,7 @@ def analyze(request: ReasoningRequest):
         "ai-regulation-bottlenecks": "AI Regulation Bottlenecks"
     }
 
+    # Validate and map to GPT prompt label
     if key not in case_map:
         raise ValueError(f"Unknown case_name: {request.case_name}")
 

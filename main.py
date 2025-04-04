@@ -3,11 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Dict
 from reasoning import run_reasoning
-from load_data import load_policy_data_from_csv  # ✅ CSV loader
+from load_data import load_policy_data_from_csv
+from supabase_logger import log_reasoning_to_supabase  # ✅ Supabase logger
 
 app = FastAPI()
 
-# ✅ Enable CORS for Lovable.dev or any frontend
+# ✅ Enable CORS for Lovable.dev or other frontends
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Or restrict to ["https://lovable.dev"]
@@ -16,23 +17,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ✅ Request body structure
+# ✅ Pydantic schema for POST input
 class ReasoningRequest(BaseModel):
     case_name: str
     data: List[Dict]
 
-# ✅ Health check root
+# ✅ Root health check
 @app.get("/")
 def read_root():
     return {"message": "Hello from FastAPI!"}
 
-# ✅ Main reasoning route used by Lovable (POST)
+# ✅ Reasoning route used by Lovable
 @app.post("/reasoning-query")
 def analyze(request: ReasoningRequest):
     print("📎 case_name:", request.case_name)
     print("📎 data:", request.data)
 
-    # Normalize and map dropdown label to internal reasoning prompt name
     key = request.case_name.strip().lower().replace(" ", "-")
 
     case_map = {
@@ -47,11 +47,33 @@ def analyze(request: ReasoningRequest):
         raise ValueError(f"Unknown case_name: {request.case_name}")
 
     mapped_case = case_map[key]
-    return run_reasoning(mapped_case, request.data)
+    result = run_reasoning(mapped_case, request.data)
 
-# ✅ NEW: Route to test full CSV batch reasoning
+    # ✅ Log result to Supabase
+    log_reasoning_to_supabase(
+        case_name=mapped_case,
+        process=result.get("process", ""),
+        kg=result.get("kg", ""),
+        causal=result.get("causal", ""),
+        source="lovable"
+    )
+
+    return result
+
+# ✅ Route to test CSV data via batch reasoning
 @app.get("/test-batch-reasoning")
 def test_reasoning():
     data = load_policy_data_from_csv()
-    case_name = "Policy Analysis"  # You can test other mappings too
-    return run_reasoning(case_name, data)
+    case_name = "Policy Analysis"
+    result = run_reasoning(case_name, data)
+
+    # ✅ Log batch result to Supabase
+    log_reasoning_to_supabase(
+        case_name=case_name,
+        process=result.get("process", ""),
+        kg=result.get("kg", ""),
+        causal=result.get("causal", ""),
+        source="test"
+    )
+
+    return result

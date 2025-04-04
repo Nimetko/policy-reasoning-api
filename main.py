@@ -6,33 +6,38 @@ from reasoning import run_reasoning
 
 app = FastAPI()
 
-# ✅ CORS: allow Lovable.dev or any frontend to access this API
+# ✅ Enable CORS for frontend integrations (e.g., Lovable.dev)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # For security, later you can restrict to ["https://lovable.dev"]
+    allow_origins=["*"],  # You can change this to ["https://lovable.dev"] for stricter access
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ✅ Define request schema
+# ✅ Request schema using Pydantic
 class ReasoningRequest(BaseModel):
     case_name: str
     data: List[Dict]
 
-# ✅ Basic root check (optional)
+# ✅ Root route (optional health check)
 @app.get("/")
 def read_root():
     return {"message": "Hello from FastAPI!"}
 
-# ✅ Main reasoning endpoint with debugging and format-safe lookup
+# ✅ Main reasoning endpoint with logging and dropdown-safe case_name support
 @app.post("/reasoning-query")
 def analyze(request: ReasoningRequest):
     print("📎 case_name:", request.case_name)
     print("📎 data:", request.data)
 
-    # 🔄 Normalization for case_name input from Lovable.dev
-    case_lookup = {
+    # 🔄 Accepts both display names and kebab-case variants
+    case_map = {
+        "Policy Analysis": "Policy Analysis",
+        "Clause Rejections": "Clause Rejections",
+        "Department Delays": "Department Delays",
+        "Multi-Department Impact": "Multi-Department Impact",
+        "AI Regulation Bottlenecks": "AI Regulation Bottlenecks",
         "policy-analysis": "Policy Analysis",
         "clause-rejections": "Clause Rejections",
         "department-delays": "Department Delays",
@@ -40,11 +45,11 @@ def analyze(request: ReasoningRequest):
         "ai-regulation-bottlenecks": "AI Regulation Bottlenecks"
     }
 
-    # Convert input like "department-delays" → "Department Delays"
-    case = request.case_name.lower().strip().replace(" ", "-")
-    if case not in case_lookup:
+    # 🧠 Normalize and match case name
+    raw = request.case_name.strip()
+    mapped = case_map.get(raw, case_map.get(raw.lower().replace(" ", "-")))
+
+    if not mapped:
         raise ValueError(f"Unknown case_name: {request.case_name}")
 
-    # Run reasoning with safe value
-    mapped_case = case_lookup[case]
-    return run_reasoning(mapped_case, request.data)
+    return run_reasoning(mapped, request.data)

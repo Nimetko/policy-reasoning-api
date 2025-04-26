@@ -8,6 +8,9 @@ from supabase_logger import log_reasoning_to_supabase
 import os
 from openai import OpenAI
 
+# Load OpenAI API key once at startup
+openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
 # Initialize FastAPI application
 app = FastAPI()
 
@@ -109,11 +112,8 @@ def free_question(request: FreeQuestionRequest):
     {data}
     """
 
-    # Initialize OpenAI client using environment variable for API key
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
     # Create a chat completion request to the LLM (Language Model)
-    response = client.chat.completions.create(
+    response = openai_client.chat.completions.create(
         model="gpt-4o",  # Use GPT-4o model for better reasoning
         messages=[
             {"role": "system", "content": "You are a helpful policy reasoning assistant."},
